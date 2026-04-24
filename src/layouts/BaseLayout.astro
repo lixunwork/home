@@ -1,0 +1,207 @@
+---
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — lxun.org</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="data:," />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --black: #000;
+        --white: #fff;
+        --gray-light: #f2f2f0;
+        --gray-mid: #c8c8c4;
+        --gray-dark: #444440;
+        --rule: 1.5px;
+        --font-display: "Barlow Condensed", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+        --font-zh: "Noto Serif SC", serif;
+        --grid-gap: 24px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--white);
+        color: var(--black);
+        font-family: var(--font-mono);
+        font-size: 13px;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 40px;
+      }
+
+      hr.thick {
+        border: none;
+        border-top: 4px solid var(--black);
+        margin: 0;
+      }
+      hr.thin {
+        border: none;
+        border-top: var(--rule) solid var(--black);
+        margin: 0;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--white);
+        border-bottom: 4px solid var(--black);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: stretch;
+        height: 52px;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 40px;
+      }
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+        border-right: var(--rule) solid var(--black);
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+        text-decoration: none;
+        color: var(--black);
+        text-transform: lowercase;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        list-style: none;
+        margin-left: auto;
+      }
+      .nav-links li {
+        border-left: var(--rule) solid var(--black);
+      }
+      .nav-links a {
+        display: flex;
+        align-items: center;
+        height: 52px;
+        padding: 0 20px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: var(--black);
+        transition: background 0.15s;
+      }
+      .nav-links a:hover {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        padding: 40px 0;
+      }
+      .footer-inner {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: var(--grid-gap);
+        align-items: end;
+      }
+      .footer-brand {
+        grid-column: 1 / 5;
+      }
+      .footer-name {
+        font-family: var(--font-display);
+        font-weight: 900;
+        font-size: 56px;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .footer-url {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--gray-dark);
+        letter-spacing: 0.08em;
+      }
+      .footer-copy {
+        grid-column: 9 / 13;
+        text-align: right;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--gray-dark);
+        letter-spacing: 0.1em;
+        line-height: 2;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-inner">
+        <a class="nav-logo" href="/">lxun.org</a>
+        <ul class="nav-links">
+          <li><a href="/">Home</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <hr class="thick" />
+      <div class="container">
+        <div class="footer-inner" style="padding-top: 32px;">
+          <div class="footer-brand">
+            <div class="footer-name">LXUN</div>
+            <div class="footer-url">lxun.org — tech notes & guides</div>
+          </div>
+          <div class="footer-copy">
+            <p>Built with Astro.</p>
+            <p style="margin-top: 8px;">&copy; 2025 lxun.org</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
