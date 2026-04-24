@@ -1,114 +1,943 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XUN / 技术和踩坑分享</title>
-    <style>
-        /* 引入更具硬朗感的字体 */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>lxun.org — xun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  :root {
+    --black: #000;
+    --white: #fff;
+    --gray-light: #f2f2f0;
+    --gray-mid: #c8c8c4;
+    --gray-dark: #444440;
+    --rule: 1.5px;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-zh: 'Noto Serif SC', serif;
+    --grid-gap: 24px;
+  }
 
-        body {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            height: 100vh;
-            overflow: hidden; /* 保持单页视觉冲击 */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 50px;
-        }
+  html { scroll-behavior: smooth; }
 
-        /* 左上角品牌 */
-        .brand {
-            font-size: clamp(8rem, 25vw, 18rem);
-            font-weight: 900;
-            line-height: 0.75;
-            letter-spacing: -0.06em;
-            text-transform: uppercase;
-        }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
 
-        /* 右下角内容容器 */
-        .bottom-right-zone {
-            align-self: flex-end;
-            text-align: right;
-            max-width: 600px;
-        }
+  /* ── GRID ── */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
 
-        /* 核心描述 */
-        .tagline {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 2rem;
-            letter-spacing: -0.02em;
-            border-bottom: 12px solid #000;
-            display: inline-block;
-            padding-bottom: 5px;
-        }
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--grid-gap);
+  }
 
-        /* 剩余导航链接 */
-        .nav-links {
-            list-style: none;
-        }
+  /* ── RULES ── */
+  hr.thick { border: none; border-top: 4px solid var(--black); margin: 0; }
+  hr.thin  { border: none; border-top: var(--rule) solid var(--black); margin: 0; }
+  hr.dot   { border: none; border-top: var(--rule) dashed var(--gray-mid); margin: 0; }
 
-        .nav-links a {
-            display: block;
-            font-size: 1.5rem;
-            font-weight: 900;
-            text-decoration: none;
-            color: #000;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            transition: opacity 0.2s;
-        }
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--white);
+    border-bottom: 4px solid var(--black);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: stretch;
+    height: 52px;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    border-right: var(--rule) solid var(--black);
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    color: var(--black);
+    text-transform: lowercase;
+  }
+  .nav-logo span {
+    font-family: var(--font-zh);
+    font-size: 18px;
+    margin-left: 8px;
+    opacity: 0.4;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin-left: auto;
+  }
+  .nav-links li { border-left: var(--rule) solid var(--black); }
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 20px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--black);
+    transition: background 0.15s;
+  }
+  .nav-links a:hover { background: var(--black); color: var(--white); }
+  .nav-status {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-left: var(--rule) solid var(--black);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    gap: 7px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--black);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity: 0.2; } }
 
-        .nav-links a:hover {
-            opacity: 0.5;
-        }
+  /* ── HERO ── */
+  .hero {
+    padding: 0;
+    border-bottom: 4px solid var(--black);
+    position: relative;
+    overflow: hidden;
+    min-height: 560px;
+  }
+  .hero-bg-char {
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-zh);
+    font-size: 520px;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--gray-mid);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--grid-gap);
+    padding: 0 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    min-height: 560px;
+    align-items: end;
+  }
+  .hero-label {
+    grid-column: 1 / 3;
+    padding-bottom: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  .label-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    border-left: 3px solid var(--black);
+    padding-left: 10px;
+    line-height: 1.4;
+  }
+  .label-index {
+    font-family: var(--font-display);
+    font-size: 120px;
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--gray-mid);
+    display: block;
+  }
+  .hero-main {
+    grid-column: 3 / 11;
+    padding: 80px 0 52px;
+    border-left: var(--rule) solid var(--black);
+    border-right: var(--rule) solid var(--black);
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  .hero-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(80px, 10vw, 148px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 0.12em;
+  }
+  .hero-name .char-zh {
+    font-family: var(--font-zh);
+    font-size: 0.72em;
+    line-height: 1;
+    vertical-align: baseline;
+    opacity: 0.55;
+    font-weight: 900;
+  }
+  .hero-desc {
+    max-width: 520px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--gray-dark);
+    border-top: var(--rule) solid var(--black);
+    padding-top: 20px;
+    margin-top: 0;
+  }
+  .hero-desc em {
+    font-style: normal;
+    color: var(--black);
+    font-weight: 500;
+  }
+  .hero-meta {
+    grid-column: 11 / 13;
+    padding-bottom: 52px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 20px;
+  }
+  .meta-item {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    line-height: 1.7;
+  }
+  .meta-item strong {
+    display: block;
+    color: var(--black);
+    font-weight: 500;
+    font-size: 11px;
+    margin-bottom: 3px;
+  }
 
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            body {
-                padding: 30px;
-            }
-            .brand {
-                font-size: 25vw;
-            }
-            .tagline {
-                font-size: 1.5rem;
-                border-bottom-width: 8px;
-            }
-        }
-    </style>
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    padding: 28px 0;
+    border-bottom: var(--rule) solid var(--black);
+    margin-bottom: 0;
+  }
+  .section-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gray-dark);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .section-count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--gray-dark);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── POSTS ── */
+  #posts { padding-bottom: 80px; border-bottom: 4px solid var(--black); }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+  }
+
+  .post-card {
+    border-right: var(--rule) solid var(--black);
+    border-bottom: var(--rule) solid var(--black);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .post-card:hover { background: var(--black); }
+  .post-card:hover * { color: var(--white) !important; }
+  .post-card:hover .post-tag { border-color: var(--white); }
+  .post-card:hover .post-num { -webkit-text-stroke-color: rgba(255,255,255,0.12); }
+  .post-card:hover .post-arrow { opacity: 1; }
+
+  .post-card:nth-child(3n) { border-right: none; }
+  .col-4 { grid-column: span 4; }
+  .col-6 { grid-column: span 6; }
+  .col-12 { grid-column: span 12; }
+
+  .post-num {
+    font-family: var(--font-display);
+    font-size: 96px;
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gray-mid);
+    display: block;
+    margin-bottom: -8px;
+    transition: -webkit-text-stroke-color 0.2s;
+  }
+  .post-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    border: var(--rule) solid var(--black);
+    padding: 3px 8px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .post-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin-bottom: 12px;
+    transition: color 0.2s;
+  }
+  .post-excerpt {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--gray-dark);
+    transition: color 0.2s;
+  }
+  .post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: var(--rule) solid var(--black);
+    transition: border-color 0.2s;
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gray-dark);
+    transition: color 0.2s;
+  }
+  .post-arrow {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  /* Featured post */
+  .post-card.featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: end;
+  }
+  .post-card.featured .post-num { font-size: 160px; }
+  .post-card.featured .post-title { font-size: 36px; }
+
+  /* ── ABOUT ── */
+  #about { padding-bottom: 80px; border-bottom: 4px solid var(--black); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--grid-gap);
+    padding-top: 48px;
+  }
+  .about-left {
+    grid-column: 1 / 4;
+    border-right: var(--rule) solid var(--black);
+    padding-right: var(--grid-gap);
+  }
+  .about-char {
+    font-family: var(--font-zh);
+    font-size: 200px;
+    line-height: 1;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--black);
+    display: block;
+    margin-bottom: 20px;
+  }
+  .about-definition {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--gray-dark);
+    padding-top: 16px;
+    border-top: var(--rule) solid var(--black);
+  }
+  .about-definition .pinyin {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .about-center {
+    grid-column: 4 / 10;
+    padding: 0 var(--grid-gap);
+    border-right: var(--rule) solid var(--black);
+  }
+  .about-bio {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    color: var(--black);
+    margin-bottom: 32px;
+  }
+  .about-bio strong { font-weight: 700; }
+  .skill-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: var(--rule) solid var(--black);
+    border-left: var(--rule) solid var(--black);
+  }
+  .skill-item {
+    border-right: var(--rule) solid var(--black);
+    border-bottom: var(--rule) solid var(--black);
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .skill-dot {
+    width: 5px; height: 5px;
+    background: var(--black);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .about-right {
+    grid-column: 10 / 13;
+    padding-left: var(--grid-gap);
+  }
+  .contact-list { list-style: none; }
+  .contact-list li {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    border-bottom: var(--rule) solid var(--black);
+  }
+  .contact-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    margin-bottom: 4px;
+  }
+  .contact-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--black);
+    text-decoration: none;
+  }
+  .contact-value:hover { text-decoration: underline; }
+
+  /* ── PRINCIPLES / TICKER ── */
+  .ticker-wrap {
+    border-top: var(--rule) solid var(--black);
+    border-bottom: var(--rule) solid var(--black);
+    overflow: hidden;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    background: var(--black);
+  }
+  .ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 28s linear infinite;
+    gap: 0;
+  }
+  .ticker-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 0 32px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .ticker-sep {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 20px;
+    color: rgba(255,255,255,0.3);
+  }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ── PITFALL SECTION ── */
+  #pitfalls { padding-bottom: 80px; border-bottom: 4px solid var(--black); }
+
+  .pitfall-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 0;
+    border-top: none;
+  }
+  .pitfall-item {
+    grid-column: span 6;
+    border-right: var(--rule) solid var(--black);
+    border-bottom: var(--rule) solid var(--black);
+    padding: 28px 28px 24px;
+  }
+  .pitfall-item:nth-child(2n) { border-right: none; }
+  .pitfall-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .pitfall-icon {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 32px;
+    line-height: 1;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pitfall-meta { flex: 1; }
+  .pitfall-cat {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-dark);
+    margin-bottom: 4px;
+  }
+  .pitfall-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .pitfall-body {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.75;
+    color: var(--gray-dark);
+    border-top: var(--rule) dashed var(--gray-mid);
+    padding-top: 14px;
+  }
+  .code-inline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--gray-light);
+    padding: 1px 5px;
+    border: var(--rule) solid var(--gray-mid);
+    border-radius: 2px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 0;
+  }
+  .footer-inner {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--grid-gap);
+    align-items: end;
+  }
+  .footer-brand {
+    grid-column: 1 / 5;
+  }
+  .footer-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .footer-url {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gray-dark);
+    letter-spacing: 0.08em;
+  }
+  .footer-copy {
+    grid-column: 9 / 13;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--gray-dark);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+  .footer-nav {
+    grid-column: 5 / 9;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .footer-nav a {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    color: var(--black);
+    padding: 6px 0;
+    border-bottom: var(--rule) solid var(--gray-mid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-nav a::after { content: '→'; opacity: 0; transition: opacity 0.15s; }
+  .footer-nav a:hover::after { opacity: 1; }
+
+  /* ── SCROLL APPEAR ── */
+  .appear {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .appear.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── CURSOR ── */
+  body { cursor: crosshair; }
+  a, button { cursor: crosshair; }
+
+  /* ── SELECTION ── */
+  ::selection { background: var(--black); color: var(--white); }
+</style>
 </head>
 <body>
 
-    <header class="brand">
-        XUN
-    </header>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner container" style="max-width:1280px;margin:0 auto;padding:0 40px;">
+    <a class="nav-logo" href="/">lxun.org<span>寻</span></a>
+    <ul class="nav-links">
+      <li><a href="#posts">写作</a></li>
+      <li><a href="#pitfalls">踩坑</a></li>
+      <li><a href="#about">关于</a></li>
+    </ul>
+    <div class="nav-status">
+      <span class="status-dot"></span>
+      <span>持续寻找</span>
+    </div>
+  </div>
+</nav>
 
-    <section class="bottom-right-zone">
-        <div class="tagline">
-            技术和踩坑分享
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-char" aria-hidden="true">寻</div>
+  <div class="hero-inner">
+    <div class="hero-label">
+      <span class="label-index" aria-hidden="true">01</span>
+      <div class="label-tag">Personal Site<br>lxun.org</div>
+    </div>
+    <div class="hero-main">
+      <h1 class="hero-name">
+        XUN<span class="char-zh">寻</span>
+      </h1>
+      <p class="hero-desc">
+        寻路者。做技术，写代码，记录那些<em>没人告诉你的坑</em>。<br>
+        个人域名 <em>lxun.org</em>，也是一种态度——<br>
+        <em>持续探索，不停寻找。</em>
+      </p>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <strong>Domain</strong>
+        lxun.org
+      </div>
+      <div class="meta-item">
+        <strong>Focus</strong>
+        Web · Systems<br>DevOps · 踩坑
+      </div>
+      <div class="meta-item">
+        <strong>Status</strong>
+        Actively Writing
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">寻路 <span class="ticker-sep">/</span> 探索 <span class="ticker-sep">/</span> 技术分享 <span class="ticker-sep">/</span> 踩坑记录 <span class="ticker-sep">/</span> 代码人生 <span class="ticker-sep">/</span> Find Your Way <span class="ticker-sep">/</span> Build · Break · Learn <span class="ticker-sep">/</span></span>
+    <span class="ticker-item">寻路 <span class="ticker-sep">/</span> 探索 <span class="ticker-sep">/</span> 技术分享 <span class="ticker-sep">/</span> 踩坑记录 <span class="ticker-sep">/</span> 代码人生 <span class="ticker-sep">/</span> Find Your Way <span class="ticker-sep">/</span> Build · Break · Learn <span class="ticker-sep">/</span></span>
+  </div>
+</div>
+
+<!-- POSTS -->
+<section id="posts">
+  <div class="container">
+    <div class="section-header appear">
+      <span class="section-num">02</span>
+      <span class="section-title">近期写作</span>
+      <span class="section-count">Latest Posts</span>
+    </div>
+  </div>
+  <div class="posts-grid appear">
+    <!-- Featured -->
+    <div class="post-card featured col-12" style="border-right: none;">
+      <div>
+        <span class="post-num" aria-hidden="true">01</span>
+      </div>
+      <div>
+        <span class="post-tag">深度 · Docker</span>
+        <h2 class="post-title">为什么你的 Docker 镜像每次都要重新拉取基础层</h2>
+        <p class="post-excerpt">花了两周排查 CI 慢的原因，最终发现只是 FROM 语句里少了一个 hash。缓存层失效的机制比你想的复杂得多，本文复盘整个排查过程。</p>
+        <div class="post-footer">
+          <span class="post-date">2025-03-12</span>
+          <span class="post-arrow">→</span>
         </div>
-        
-        <nav class="nav-links">
-            <a href="/projects">PROJECTS</a>
-            <a href="/about">ABOUT</a>
-        </nav>
+      </div>
+    </div>
+    <!-- Col 4 × 3 -->
+    <div class="post-card col-4">
+      <span class="post-num" aria-hidden="true">02</span>
+      <span class="post-tag">踩坑 · Node.js</span>
+      <h2 class="post-title">async/await 背后的事件循环陷阱</h2>
+      <p class="post-excerpt">Promise.all 与 for-await-of 的本质区别，以及我在生产环境踩坑的完整记录。</p>
+      <div class="post-footer">
+        <span class="post-date">2025-02-28</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </div>
+    <div class="post-card col-4">
+      <span class="post-num" aria-hidden="true">03</span>
+      <span class="post-tag">工具 · Git</span>
+      <h2 class="post-title">Git Rebase 的正确使用姿势与高危操作清单</h2>
+      <p class="post-excerpt">从 interactive rebase 到 force push 的边界，团队协作中哪些操作是绝对禁区。</p>
+      <div class="post-footer">
+        <span class="post-date">2025-02-10</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </div>
+    <div class="post-card col-4" style="border-right:none;">
+      <span class="post-num" aria-hidden="true">04</span>
+      <span class="post-tag">系统 · Linux</span>
+      <h2 class="post-title">文件描述符耗尽：一次线上 502 的根因追踪</h2>
+      <p class="post-excerpt">凌晨三点的告警，ulimit 的默认值，以及如何用 lsof 定位泄露点。</p>
+      <div class="post-footer">
+        <span class="post-date">2025-01-22</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <footer style="margin-top: 2rem; font-size: 0.8rem; font-weight: 700; opacity: 0.3;">
-            XUN.ORG / 2026
-        </footer>
-    </section>
+<!-- PITFALLS -->
+<section id="pitfalls">
+  <div class="container">
+    <div class="section-header appear">
+      <span class="section-num">03</span>
+      <span class="section-title">踩坑备忘</span>
+      <span class="section-count">Pitfall Index</span>
+    </div>
+  </div>
+  <div class="pitfall-grid appear">
+    <div class="pitfall-item">
+      <div class="pitfall-header">
+        <div class="pitfall-icon">!</div>
+        <div class="pitfall-meta">
+          <div class="pitfall-cat">DNS · 网络</div>
+          <div class="pitfall-title">Nginx upstream 超时，实为 DNS TTL 未刷新</div>
+        </div>
+      </div>
+      <p class="pitfall-body">服务迁移后 upstream 地址已改，但 Nginx 缓存了旧 IP 直到重载。解法：<span class="code-inline">resolver 127.0.0.1 valid=30s</span> + <span class="code-inline">set $upstream</span> 动态解析。</p>
+    </div>
+    <div class="pitfall-item">
+      <div class="pitfall-header">
+        <div class="pitfall-icon">!</div>
+        <div class="pitfall-meta">
+          <div class="pitfall-cat">Python · 依赖</div>
+          <div class="pitfall-title">requirements.txt 没锁版本，三个月后彻底跑不起来</div>
+        </div>
+      </div>
+      <p class="pitfall-body">所有依赖都写成 <span class="code-inline">requests</span> 而非 <span class="code-inline">requests==2.31.0</span>，某个上游 breaking change 直接导致生产崩溃。用 <span class="code-inline">pip freeze</span> 锁住，或上 Poetry。</p>
+    </div>
+    <div class="pitfall-item">
+      <div class="pitfall-header">
+        <div class="pitfall-icon">!</div>
+        <div class="pitfall-meta">
+          <div class="pitfall-cat">React · 渲染</div>
+          <div class="pitfall-title">useEffect 依赖数组空了，状态更新永远拿的是旧值</div>
+        </div>
+      </div>
+      <p class="pitfall-body">闭包陷阱经典案例。<span class="code-inline">[]</span> 让 effect 只在 mount 时运行，内部引用的 state 永远是初始值。正确方式是把依赖项加进数组或用 <span class="code-inline">useRef</span>。</p>
+    </div>
+    <div class="pitfall-item">
+      <div class="pitfall-header">
+        <div class="pitfall-icon">!</div>
+        <div class="pitfall-meta">
+          <div class="pitfall-cat">SSH · 安全</div>
+          <div class="pitfall-title">authorized_keys 权限 644，SSH 拒绝所有密钥登录</div>
+        </div>
+      </div>
+      <p class="pitfall-body">SSH 对文件权限极为敏感。<span class="code-inline">~/.ssh</span> 需 <span class="code-inline">700</span>，<span class="code-inline">authorized_keys</span> 需 <span class="code-inline">600</span>。组可写或其他可写会直接导致密钥认证失败，且报错并不直接。</p>
+    </div>
+  </div>
+</section>
 
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-header appear">
+      <span class="section-num">04</span>
+      <span class="section-title">关于</span>
+      <span class="section-count">About</span>
+    </div>
+    <div class="about-grid appear">
+      <div class="about-left">
+        <span class="about-char" aria-label="寻字">寻</span>
+        <div class="about-definition">
+          <span class="pinyin">xún ／ ㄒㄩㄣˊ</span>
+          动词。探求，寻找。<br>
+          既是名字里的字，<br>
+          也是 lxun.org 的根。<br><br>
+          <em style="font-style:normal; color: var(--black);">寻路者不停步。</em>
+        </div>
+      </div>
+      <div class="about-center">
+        <p class="about-bio">
+          做<strong>技术</strong>的人，写写代码，搞搞基础设施，<br>
+          偶尔被操作系统和网络搞得焦头烂额。<br><br>
+          喜欢把<strong>踩过的坑</strong>写下来，<br>
+          因为下次踩坑的可能是你，也可能还是我。
+        </p>
+        <div class="skill-list">
+          <div class="skill-item"><span class="skill-dot"></span>TypeScript / Node.js</div>
+          <div class="skill-item"><span class="skill-dot"></span>Linux / Bash</div>
+          <div class="skill-item"><span class="skill-dot"></span>Docker / K8s</div>
+          <div class="skill-item"><span class="skill-dot"></span>PostgreSQL / Redis</div>
+          <div class="skill-item"><span class="skill-dot"></span>Nginx / Caddy</div>
+          <div class="skill-item"><span class="skill-dot"></span>CI/CD Pipelines</div>
+          <div class="skill-item"><span class="skill-dot"></span>React / Next.js</div>
+          <div class="skill-item"><span class="skill-dot"></span>系统调试与排障</div>
+        </div>
+      </div>
+      <div class="about-right">
+        <ul class="contact-list">
+          <li>
+            <span class="contact-label">Site</span>
+            <a class="contact-value" href="https://lxun.org">lxun.org</a>
+          </li>
+          <li>
+            <span class="contact-label">GitHub</span>
+            <a class="contact-value" href="#">github.com/lxun</a>
+          </li>
+          <li>
+            <span class="contact-label">Mail</span>
+            <a class="contact-value" href="mailto:hi@lxun.org">hi@lxun.org</a>
+          </li>
+          <li>
+            <span class="contact-label">RSS</span>
+            <a class="contact-value" href="#">lxun.org/feed.xml</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <hr class="thick">
+  <div class="container">
+    <div class="footer-inner" style="padding-top: 32px;">
+      <div class="footer-brand">
+        <div class="footer-name">LXUN</div>
+        <div class="footer-url">lxun.org — 寻路者的技术笔记</div>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="#posts">写作 / Posts</a>
+        <a href="#pitfalls">踩坑 / Pitfalls</a>
+        <a href="#about">关于 / About</a>
+        <a href="#">RSS 订阅</a>
+      </nav>
+      <div class="footer-copy">
+        <p>Built with plain HTML.</p>
+        <p>No frameworks were harmed.</p>
+        <p style="margin-top:8px;">© 2025 lxun.org</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.appear').forEach(el => obs.observe(el));
+</script>
 </body>
 </html>
