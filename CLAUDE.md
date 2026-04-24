@@ -2,12 +2,18 @@
 
 ## 工作流程
 
-当用户在本项目提供博客内容时：
+用户将文章内容放到 `drafts/` 文件夹，我需要：
 
-1. 在 `src/content/posts/` 下创建新的 `.md` 文件，包含 frontmatter（title, description, date, tags）
-2. 运行 `npm run build` 确保构建通过
-3. 执行 `git add/commit/push` 推送到 GitHub
-4. 通知用户去 Cloudflare Pages 手动部署或确认自动部署完成
+1. 读取 `drafts/` 中的内容，整理成正式的 Markdown（包含 frontmatter）
+2. 写入 `src/content/posts/` 下
+3. 运行 `npm run build` 确保构建通过
+4. 清理 `drafts/` 中的草稿
+5. 执行 `git add/commit/push` 推送到 GitHub
+6. 通知用户去 Cloudflare Pages 手动部署或确认自动部署完成
+
+## 草稿目录
+
+- `drafts/` — 用户放入原始内容的地方，我来处理和清理
 
 ## 项目结构
 
